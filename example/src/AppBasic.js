@@ -10,7 +10,7 @@ export default function AppWithProviders({ location }) {
 
 function App() {
   const [{ search }, setQueryString] = useQueryString({ search: '' })
-  const [input, setInput] = React.useState('')
+  const [input, setInput] = React.useState(search)
 
   return (
     <form onSubmit={handleSubmit}>

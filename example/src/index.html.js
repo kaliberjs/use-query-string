@@ -23,9 +23,10 @@ export default function Index({ location }) {
         {javascript}
       </head>
       <body>
-        {path === '/'
-          ? <AppBasic location={location.pathname + location.search} />
-          : <AppReachRouter location={location.pathname + location.search} />
+        {
+          path === '/' ? <AppBasic url={location.pathname + location.search} /> :
+          path === '/reach-router' ? <AppReachRouter url={location.pathname + location.search} /> :
+          null
         }
       </body>
     </html>

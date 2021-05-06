@@ -1,14 +1,14 @@
 import React from 'react'
 import qs from 'query-string'
 
-const QueryStringContext = React.createContext({ update, location: null })
+const QueryStringContext = React.createContext({ update, url: null })
 
 const listeners = new Set()
 
 export function useQueryString(initialState = {}) {
-  const { location, update } = React.useContext(QueryStringContext)
-  const [query, setQuery] = React.useState(() => location && location.includes('?')
-    ? { ...initialState, ...qs.parse(location.split('?')[1], { arrayFormat: 'bracket' }) } 
+  const { url, update } = React.useContext(QueryStringContext)
+  const [query, setQuery] = React.useState(() => url && url.includes('?')
+    ? { ...initialState, ...qs.parse(url.split('?')[1], { arrayFormat: 'bracket' }) } 
     : initialState
   )
 
@@ -34,14 +34,14 @@ export function useQueryString(initialState = {}) {
   return [query, set]
 }
 
-export function QueryStringProvider({ location, update, children }) {
+export function QueryStringProvider({ url, update, children }) {
   const fallback = React.useContext(QueryStringContext)
   const value = React.useMemo(
     () => ({ 
-      location: location ?? fallback.location, 
+      url: url ?? fallback.url, 
       update: update ?? fallback.update 
     }), 
-    [fallback, location, update]
+    [fallback, url, update]
   )
 
   return <QueryStringContext.Provider {...{ value, children }} />
