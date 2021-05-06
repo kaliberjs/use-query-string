@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@kaliber/build": "^0.0.110"
+    "@kaliber/build": "^0.0.110",
+    "query-string": "^7.0.0"
   },
   "scripts": {
     "build": "NODE_ENV=production kaliber-build",

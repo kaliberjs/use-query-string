@@ -1,48 +1,64 @@
-# BEFORE YOU PUBLISH
-- Read [Libraries van Kaliber](https://docs.google.com/document/d/1FrJi-xWtKkbocyMVK5A5_hupjl5E4gD4rDvATDlxWyc/edit#heading=h.bb3md3gyf493).
-- Make sure your example works.
-- Make sure your package.json is correct. Have you change the library title?
-- Update the bin/postInstall script. It should refer to your library.
-- Update the `<title>` tag in `index.html.js`.
-- Remove 'BEFORE YOU PUBLISH' and 'PUBLISHING' from this document.
-
-# PUBLISHING
-- Make sure you are added to the kaliber organization on NPM
-- run `yarn publish`
-- Enter a correct version, we adhere to semantic versioning (semver)
-- run `git push`
-- run `git push --tags`
-- Send everybody an email to introduce them to your library!
-
-# Library title
-Short description.
-
-## Motivation
-Optionally add a bit of text describing why this library exists.
+# `@kaliber/use-query-string`
+Update the query string, just like you would update your state. 
 
 ## Installation
 
 ```
-yarn add @kaliber/library
+yarn add query-string
+yarn add @kaliber/use-query-string
 ```
 
 ## Usage
-Short example. If your library has multiple ways to use it, show the most used one and refer to `/example` for further examples.
+
+`useQueryString` return an array with the parsed query string and a setter function. The setter function accepts an object or a function as argument. 
+
+When passed an object, it will overwrite the existing query string with the object provided:
+Given a query string `?hello=word`, calling `setQueryString({ foo: 'bar' })` results in `?foo=bar`.
+
+When passed a function, it will use the return value of this function to overwrite the existing query string. The functions receives the parsed current query string as argument. You can use this to make selective changes to the query string:
+Given a query string `?hello=word`, calling `setQueryString(x => ({ ...x, foo: 'bar' }))` results in `?hello=world&foo=bar`.
+
+### Without SSR
 
 ```jsx
-import { hello } from 'library'
+import { useQueryString } from '@kaliber/useQueryString'
 
 function Component() {
-  return <div>{hello()}</div>
+  const [query, setQueryString] = useQueryString({ order_by: 'descencing' })
+  const { order_by: orderBy } = query
+
+  return (
+    <div>
+      <button onClick={handleClick} type='button'>
+        { order_by === 'descending' ? '↓' : '↑' }
+      </button>
+    </div>
+  )
+
+  function handleClick() {
+    setQueryString(x => ({ ...x, order_by: orderBy === 'descending' ? 'ascending' : 'descending' }))
+  }
 }
 ```
 
-# Reference
-Optionally add a reference, if your library needs it.
+### With SSR
+The example with SSR doesn't change, just wrap you application in a `QueryStringProvider`, which you provide the location:
 
-![](https://media.giphy.com/media/find-a-good-gif/giphy.gif)
+```jsx
+import { useQueryString } from '@kaliber/useQueryString'
+
+function AppWithProviders() {
+  return (
+    <QueryStringProvider {...{ location }}>
+      <App />
+    </QueryStringProvider>
+  )
+}
+```
+
+![](https://media.giphy.com/media/3bb5jcIADH9ewHnpl9/giphy.gif)
 
 ## Disclaimer
-This library is intended for internal use, we provide __no__ support, use at your own risk. It does not import React, but expects it to be provided, which [@kaliber/build](https://kaliberjs.github.io/build/) can handle for you.
+This library is intended for internal use, we provide __no__ support, use at your own risk. 
 
 This library is not transpiled.

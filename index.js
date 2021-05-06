@@ -1,1 +1,1 @@
-export { hello } from './src/hello'
+export { QueryStringProvider, useQueryString } from './src/useQueryString'
