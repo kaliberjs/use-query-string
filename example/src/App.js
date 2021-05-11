@@ -1,8 +1,8 @@
 import { QueryStringProvider, useQueryString }  from '@kaliber/use-query-string'
 
-export default function AppWithProviders({ location }) {
+export default function AppWithProviders({ search }) {
   return (
-    <QueryStringProvider {...{ location }}>
+    <QueryStringProvider {...{ search }}>
       <App />
     </QueryStringProvider>
   )

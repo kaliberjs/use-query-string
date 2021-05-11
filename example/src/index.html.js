@@ -22,7 +22,7 @@ export default function Index({ location }) {
       </head>
       <body>
         {
-          path === '/' ? <App url={location.pathname + location.search} /> :
+          path === '/' ? <App search={location.search} /> :
           null
         }
       </body>
