@@ -1,6 +1,6 @@
 {
   "name": "@kaliber/use-query-string",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "main": "index.js",
   "sideEffects": false,
   "publishConfig": {
@@ -8,8 +8,7 @@
   },
   "keywords": [
     "query string",
-    "history",
-    "url"
+    "qs"
   ],
   "files": [
     "index.js",
