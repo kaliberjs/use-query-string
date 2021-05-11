@@ -10,7 +10,7 @@ export default function AppWithProviders({ search }) {
 
 function App() {
   const [{ search }, setQueryString] = useQueryString({ search: '' })
-  const [input, setInput] = React.useState(search)
+  const [input, setInput] = React.useState(null)
 
   return (
     <form onSubmit={handleSubmit}>
@@ -18,7 +18,7 @@ function App() {
         ? <h1>You've searched on '{search}'</h1>
         : <h1>Search</h1>
       }
-      <input type='text' value={input} onChange={e => setInput(e.currentTarget.value)} name='search' />
+      <input type='text' value={input ?? search} onChange={e => setInput(e.currentTarget.value)} name='search' />
       <button type='submit'>Apply search query</button>
     </form>
   )
