@@ -1,7 +1,7 @@
 import React from 'react'
 import qs from 'query-string'
 
-const QueryStringContext = React.createContext({ update, search: null })
+const QueryStringContext = React.createContext({ update: replaceQueryString, search: null })
 
 const listeners = new Set()
 
@@ -25,7 +25,7 @@ export function useQueryString(initialState = {}) {
     queryOrFn => {
       const newQuery = typeof queryOrFn === 'function' ? queryOrFn(query) : query
       const queryString = qs.stringify(newQuery, { skipEmptyString: true, skipNull: true, arrayFormat: 'bracket' })
-      update(newQuery, queryString)
+      update({ query: newQuery, queryString })
       listeners.forEach(fn => fn(newQuery))
     },
     [update, query]
@@ -34,20 +34,12 @@ export function useQueryString(initialState = {}) {
   return [query, set]
 }
 
-export function QueryStringProvider({ search, update, children }) {
-  const fallback = React.useContext(QueryStringContext)
-  const value = React.useMemo(
-    () => ({ 
-      search: search ?? fallback.search, 
-      update: update ?? fallback.update 
-    }), 
-    [fallback, search, update]
-  )
-
+export function QueryStringProvider({ search, update = replaceQueryString, children }) {
+  const value = React.useMemo(() => ({ search, update }), [search, update])
   return <QueryStringContext.Provider {...{ value, children }} />
 }
 
-function update(query, queryString) {
+function replaceQueryString({ query, queryString }) {
   const url = window.location.pathname + (queryString ? '?' + queryString : '') + window.location.hash
   window.history.replaceState(query, null, url)
 }
