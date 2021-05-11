@@ -35,7 +35,19 @@ export function useQueryString(initialState = {}) {
 }
 
 export function QueryStringProvider({ search, update = replaceQueryString, children }) {
-  const value = React.useMemo(() => ({ search, update }), [search, update])
+  const updateRef = React.useRef(null)
+  updateRef.current = update
+
+  const value = React.useMemo(
+    () => ({ 
+      search, 
+      update(...args) {
+        updateRef.current(...args)
+      }
+    }), 
+    [search]
+  )
+
   return <QueryStringContext.Provider {...{ value, children }} />
 }
 
