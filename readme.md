@@ -124,6 +124,78 @@ function updateQueryString({ query, queryString }) {
 
 You can also use this if you really, *really* want to use `history.pushState` instead of `history.replaceState`. 
 
+## Configuring `query-string`
+
+### Default options
+```
+{
+  parse: {
+    arrayFormat: 'bracket'
+  },
+  stringify: {
+    skipEmptyString: true, 
+    skipNull: true, 
+    arrayFormat: 'bracket'
+  }
+}
+```
+
+### Providing & sharing options
+Normally, the default options should be sufficient, but should you wish to provide your own options for `query-string`, you can do so by providing them to the `QueryStringProvider`. 
+
+**🚨 Caution:** make sure this is a stable object!
+The easiest way to do this is to define it outside of your component:
+
+```jsx
+import { navigate } from 'your-favorite-routing-library'
+import { QueryStringProvider, useQueryString } from '@kaliber/useQueryString'
+
+const options = {
+  stringify: { arrayFormat: 'comma', skipEmptyString: false, skipNull: false },
+  parse: { arrayFormat: 'comma' }
+}
+
+function AppWithProviders({ search }) {
+  return (
+    <QueryStringProvider update={updateQueryString} {...{ search }}>
+      <App />
+    </QueryStringProvider>
+  )
+}
+```
+
+Sometimes you'll want to use `query-string` in parallel, for instance when generating links with query strings. In that case you should make sure you always use the same options for both. You can either provide `query-string` with options imported from a shared location, or import the default options used by `@kaliber/use-query-string` and use those in your `qs.parse` an `qs.stringify` calls.
+
+```jsx
+import qs from 'query-string'
+import { defaultOptions as options } from '@kaliber/use-query-string'
+
+function Component(query = {}) {
+  const url = '?' + qs.stringify(query, options.stringify)
+
+  return (
+    <div>
+      <Link to={url}>Link</Link>
+    </div>
+  )
+}
+```
+
+or 
+
+```jsx
+import { queryStringOptions } from '/some-shared-location'
+import { QueryStringProvider, useQueryString } from '@kaliber/useQueryString'
+
+function AppWithProviders({ search }) {
+  return (
+    <QueryStringProvider update={updateQueryString} options={queryStringOptions} {...{ search }}>
+      <App />
+    </QueryStringProvider>
+  )
+}
+```
+
 ----
 
 ![](https://media.giphy.com/media/3o85fQzrJTtmr7iitO/giphy.gif)

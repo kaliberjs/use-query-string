@@ -18,7 +18,7 @@ function App() {
         ? <h1>You've searched on '{searchQuery}'</h1>
         : <h1>Search</h1>
       }
-      <input type='search' value={input ?? searchQuery} onChange={e => setInput(e.currentTarget.value)} name='search' />
+      <input type='search' value={input ?? searchQuery ?? ''} onChange={e => setInput(e.currentTarget.value)} name='search' />
       <button type='submit'>Apply search query</button>
     </form>
   )
