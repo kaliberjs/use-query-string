@@ -37,7 +37,7 @@ Given a query string `?hello=world`, calling `setQueryString(x => ({ ...x, foo: 
 ### Without SSR
 
 ```jsx
-import { useQueryString } from '@kaliber/useQueryString'
+import { useQueryString } from '@kaliber/use-query-string'
 
 function Component() {
   const [{ search: searchQuery }, setQueryString] = useQueryString({ search: '' })
@@ -65,7 +65,7 @@ function Component() {
 Wrap you application in a `QueryStringProvider`, which you provide with the known `search` string. If you're using express, that would be `req.location.search`. Because `search` is now correctly set on the first render, you can safely use it as the default value for `input`.
 
 ```jsx
-import { QueryStringProvider, useQueryString } from '@kaliber/useQueryString'
+import { QueryStringProvider, useQueryString } from '@kaliber/use-query-string'
 
 function AppWithProviders({ search }) {
   return (
@@ -104,7 +104,7 @@ If you're using a routing library which manages the history for you, you can pro
 
 ```jsx
 import { navigate } from 'your-favorite-routing-library'
-import { QueryStringProvider, useQueryString } from '@kaliber/useQueryString'
+import { QueryStringProvider, useQueryString } from '@kaliber/use-query-string'
 
 function AppWithProviders({ search }) {
   return (
@@ -148,7 +148,7 @@ The easiest way to do this is to define it outside of your component:
 
 ```jsx
 import { navigate } from 'your-favorite-routing-library'
-import { QueryStringProvider, useQueryString } from '@kaliber/useQueryString'
+import { QueryStringProvider, useQueryString } from '@kaliber/use-query-string'
 
 const options = {
   stringify: { arrayFormat: 'comma', skipEmptyString: false, skipNull: false },
@@ -185,7 +185,7 @@ or
 
 ```jsx
 import { queryStringOptions } from '/some-shared-location'
-import { QueryStringProvider, useQueryString } from '@kaliber/useQueryString'
+import { QueryStringProvider, useQueryString } from '@kaliber/use-query-string'
 
 function AppWithProviders({ search }) {
   return (
