@@ -34,7 +34,7 @@ export function useQueryString(initialState = {}) {
 
   const set = React.useCallback(
     queryOrFn => {
-      const newQuery = typeof queryOrFn === 'function' ? queryOrFn(query) : query
+      const newQuery = typeof queryOrFn === 'function' ? queryOrFn(query) : queryOrFn
       const queryString = qs.stringify(newQuery, options.stringify)
       update({ query: newQuery, queryString })
       listeners.forEach(fn => fn(newQuery))
