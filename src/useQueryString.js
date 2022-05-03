@@ -2,9 +2,11 @@ import React from 'react'
 import qs from 'query-string'
 
 export const defaultOptions = {
+  /** @type {import('query-string').ParseOptions} */
   parse: {
     arrayFormat: 'bracket'
   },
+  /** @type {import('query-string').StringifyOptions} */
   stringify: {
     skipEmptyString: true, 
     skipNull: true, 
@@ -12,6 +14,7 @@ export const defaultOptions = {
   }
 }
 
+/** @type {React.Context<object>} */
 export const QueryStringContext = React.createContext({ update: replaceQueryString, search: null, options: defaultOptions })
 
 const listeners = new Set()
