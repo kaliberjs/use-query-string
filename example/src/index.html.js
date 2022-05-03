@@ -34,7 +34,7 @@ export default function Index({ location }) {
 
 function AppWithProvider({ search }) {
   return (
-    <QueryStringProvider options={true} {...{ search }}>
+    <QueryStringProvider {...{ search }}>
       <App />
     </QueryStringProvider>
   )
