@@ -1,8 +1,13 @@
 import { useQueryString }  from '@kaliber/use-query-string'
 
-export function App() {
-  const [{ search: searchQuery }, setQueryString] = useQueryString()
-  const [input, setInput] = React.useState(searchQuery ?? '')
+export function AppWithoutProvider() {
+  const [{ search: searchQuery = '' }, setQueryString] = useQueryString()
+  const [input, setInput] = React.useState('')
+
+  React.useEffect(
+    () => { setInput(searchQuery) },
+    [searchQuery]
+  )
 
   return (
     <form onSubmit={handleSubmit}>

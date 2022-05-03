@@ -1,0 +1,1 @@
+export { AppWithoutProvider as default } from '/AppWithoutProvider'
