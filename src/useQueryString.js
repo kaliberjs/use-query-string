@@ -16,16 +16,13 @@ const QueryStringContext = React.createContext({ update: replaceQueryString, sea
 
 const listeners = new Set()
 
-export function useQueryString(initialState = {}) {
+export function useQueryString() {
   const { search, update, options } = React.useContext(QueryStringContext)
-  const [query, setQuery] = React.useState(() => search
-    ? { ...initialState, ...qs.parse(search, options.parse) } 
-    : initialState
-  )
+  const [query, setQuery] = React.useState(() => qs.parse(search, options.parse) ?? null)
 
   React.useEffect(
     () => {
-      setQuery(qs.parse(window.location.search, options.parse))
+      setQuery(q => q ?? qs.parse(window.location.search))
       listeners.add(setQuery)
       return () => { listeners.delete(setQuery) }
     },
