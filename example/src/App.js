@@ -7,7 +7,7 @@ export function App() {
   return (
     <form onSubmit={handleSubmit}>
       {searchQuery
-        ? <h1>You've searched on '{searchQuery}'</h1>
+        ? <h1>You've searched for '{searchQuery}'</h1>
         : <h1>Search</h1>
       }
       <input type='search' value={input} onChange={e => setInput(e.currentTarget.value)} name='search' />
