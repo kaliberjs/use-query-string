@@ -15,13 +15,13 @@ export const defaultOptions = {
 }
 
 /** @type {React.Context<object>} */
-export const QueryStringContext = React.createContext({ update: replaceQueryString, search: null, options: defaultOptions })
+export const queryStringContext = React.createContext({ update: replaceQueryString, search: null, options: defaultOptions })
 
 const listeners = new Set()
 const EMPTY = {}
 
 export function useQueryString() {
-  const { search, update, options } = React.useContext(QueryStringContext)
+  const { search, update, options } = React.useContext(queryStringContext)
   const [query, setQuery] = React.useState(() => search ? qs.parse(search, options.parse) : EMPTY)
 
   React.useEffect(
@@ -61,7 +61,7 @@ export function QueryStringProvider({ search, update = replaceQueryString, optio
     [search]
   )
 
-  return <QueryStringContext.Provider {...{ value, children }} />
+  return <queryStringContext.Provider {...{ value, children }} />
 }
 
 function replaceQueryString({ query, queryString }) {

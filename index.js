@@ -1,1 +1,1 @@
-export { QueryStringProvider, QueryStringContext, useQueryString, defaultOptions } from './src/useQueryString'
+export { QueryStringProvider, queryStringContext, useQueryString, defaultOptions } from './src/useQueryString'
