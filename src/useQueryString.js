@@ -2,9 +2,11 @@ import React from 'react'
 import qs from 'query-string'
 
 export const defaultOptions = {
+  /** @type {import('query-string').ParseOptions} */
   parse: {
     arrayFormat: 'bracket'
   },
+  /** @type {import('query-string').StringifyOptions} */
   stringify: {
     skipEmptyString: true, 
     skipNull: true, 
@@ -12,20 +14,19 @@ export const defaultOptions = {
   }
 }
 
-const QueryStringContext = React.createContext({ update: replaceQueryString, search: null, options: defaultOptions })
+/** @type {React.Context<object>} */
+export const queryStringContext = React.createContext({ update: replaceQueryString, search: null, options: defaultOptions })
 
 const listeners = new Set()
+const EMPTY = {}
 
-export function useQueryString(initialState = {}) {
-  const { search, update, options } = React.useContext(QueryStringContext)
-  const [query, setQuery] = React.useState(() => search
-    ? { ...initialState, ...qs.parse(search, options.parse) } 
-    : initialState
-  )
+export function useQueryString() {
+  const { search, update, options } = React.useContext(queryStringContext)
+  const [query, setQuery] = React.useState(() => search ? qs.parse(search, options.parse) : EMPTY)
 
   React.useEffect(
     () => {
-      setQuery(qs.parse(window.location.search, options.parse))
+      setQuery(q => q === EMPTY ? qs.parse(window.location.search) : q)
       listeners.add(setQuery)
       return () => { listeners.delete(setQuery) }
     },
@@ -60,7 +61,7 @@ export function QueryStringProvider({ search, update = replaceQueryString, optio
     [search]
   )
 
-  return <QueryStringContext.Provider {...{ value, children }} />
+  return <queryStringContext.Provider {...{ value, children }} />
 }
 
 function replaceQueryString({ query, queryString }) {

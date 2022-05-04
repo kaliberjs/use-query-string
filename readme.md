@@ -8,7 +8,7 @@ yarn add query-string
 yarn add @kaliber/use-query-string
 ```
 
-If you're using `@kaliber/build`, make sure `query-string` and it's es6 dependencies are transpiled:
+If you're using `@kaliber/build`, make sure `query-string` and it's non es5-compatible dependencies are transpiled:
 
 _config/default.js_
 ```js
@@ -26,13 +26,11 @@ module.exports = {
 
 ## Usage
 
-`useQueryString` returns an array with two items: the parsed query string and a setter function. The setter function accepts an object or a function as argument. 
+`useQueryString` returns an array with two items: the parsed query string and a setter function. If there is no query to parse the parsed query will be an empty object. This makes it realiable to destructure values from the parsed query. The setter function accepts an object or a function as argument. 
 
-When passed an object, it will overwrite the existing query string with the object provided:
-Given a query string `?hello=word`, calling `setQueryString({ foo: 'bar' })` results in `?foo=bar`.
+When passed an object, it will overwrite the existing query string with the object provided.
 
-When passed a function, it will use the return value of this function to overwrite the existing query string. The functions receives the parsed current query string as argument. You can use this to make selective changes to the query string:
-Given a query string `?hello=world`, calling `setQueryString(x => ({ ...x, foo: 'bar' }))` results in `?hello=world&foo=bar`.
+When passed a function, it will use the return value of this function to overwrite the existing query string. The functions receives the current parsed query string as argument. You can use this to make selective changes to the query string. E.g.: to only update the search query but keep the rest of the query string: `setQueryString(x => ({ ...x, search: 'hello' }))`.
 
 ### Without SSR
 
@@ -40,16 +38,21 @@ Given a query string `?hello=world`, calling `setQueryString(x => ({ ...x, foo: 
 import { useQueryString } from '@kaliber/use-query-string'
 
 function Component() {
-  const [{ search: searchQuery }, setQueryString] = useQueryString({ search: '' })
+  const [{ search: searchQuery = '' }, setQueryString] = useQueryString()
   const [input, setInput] = React.useState(null)
+
+  React.useEffect(
+    () => { setInput(searchQuery) },
+    [searchQuery]
+  )
 
   return (
     <form onSubmit={handleSubmit}>
       {search
-        ? <h1>You've searched on '{searchQuery}'</h1>
+        ? <h1>You've searched for '{searchQuery}'</h1>
         : <h1>Search</h1>
       }
-      <input type='text' value={input ?? searchQuery} onChange={e => setInput(e.currentTarget.value)} name='search' />
+      <input type='text' value={input} onChange={e => setInput(e.currentTarget.value)} name='search' />
       <button type='submit'>Apply search query</button>
     </form>
   )
@@ -62,7 +65,7 @@ function Component() {
 ```
 
 ### With SSR
-Wrap you application in a `QueryStringProvider`, which you provide with the known `search` string. If you're using express, that would be `req.location.search`. Because `search` is now correctly set on the first render, you can safely use it as the default value for `input`.
+Wrap you application in a `QueryStringProvider`, which you provide with the known `search` string. If you're using express that would be `req.location.search`. Because `search` is now correctly set on the first render, you can safely use it as the default value for `input`.
 
 ```jsx
 import { QueryStringProvider, useQueryString } from '@kaliber/use-query-string'
@@ -77,13 +80,13 @@ function AppWithProviders({ search }) {
 
 
 function Component() {
-  const [{ search: searchQuery }, setQueryString] = useQueryString({ search: '' })
-  const [input, setInput] = React.useState(search)
+  const [{ search: searchQuery = '' }, setQueryString] = useQueryString()
+  const [input, setInput] = React.useState(searchQuery)
 
   return (
     <form onSubmit={handleSubmit}>
       {search
-        ? <h1>You've searched on '{searchQuery}'</h1>
+        ? <h1>You've searched for '{searchQuery}'</h1>
         : <h1>Search</h1>
       }
       <input type='text' value={input} onChange={e => setInput(e.currentTarget.value)} name='search' />
@@ -122,6 +125,8 @@ function updateQueryString({ query, queryString }) {
 }
 ```
 
+**🚨 Caution:** Functions cannot be passed from a server side context to a client side one. So make sure to import your custom import function in your client wrapper as well and pass it to the `QueryStringProvider` again.
+
 You can also use this if you really, *really* want to use `history.pushState` instead of `history.replaceState`. 
 
 ## Configuring `query-string`
@@ -157,7 +162,7 @@ const options = {
 
 function AppWithProviders({ search }) {
   return (
-    <QueryStringProvider update={updateQueryString} {...{ search }}>
+    <QueryStringProvider {...{ search }}>
       <App />
     </QueryStringProvider>
   )
@@ -189,7 +194,7 @@ import { QueryStringProvider, useQueryString } from '@kaliber/use-query-string'
 
 function AppWithProviders({ search }) {
   return (
-    <QueryStringProvider update={updateQueryString} options={queryStringOptions} {...{ search }}>
+    <QueryStringProvider options={queryStringOptions} {...{ search }}>
       <App />
     </QueryStringProvider>
   )
