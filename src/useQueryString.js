@@ -26,7 +26,7 @@ export function useQueryString() {
 
   React.useEffect(
     () => {
-      setQuery(q => q === EMPTY ? qs.parse(window.location.search) : q)
+      setQuery(q => q === EMPTY ? qs.parse(window.location.search, options.parse) : q)
       listeners.add(setQuery)
       return () => { listeners.delete(setQuery) }
     },
