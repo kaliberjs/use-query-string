@@ -14,13 +14,6 @@ export const defaultOptions = {
   }
 }
 
-/** @type {React.Context<object>} */
-export const queryStringContext = React.createContext({ update: replaceQueryString, search: null, options: defaultOptions })
-
-const listeners = new Set()
-const EMPTY = {}
-
-/** @returns {[object, (object | function) => void]} */
 export function useQueryString() {
   const { search, update, options } = React.useContext(queryStringContext)
   const [query, setQuery] = React.useState(() => search ? qs.parse(search, options.parse) : EMPTY)
@@ -35,7 +28,7 @@ export function useQueryString() {
   )
 
   const set = React.useCallback(
-    queryOrFn => {
+    (/** @type {object | ((any) => object)} */ queryOrFn) => {
       const newQuery = typeof queryOrFn === 'function' ? queryOrFn(query) : queryOrFn
       const queryString = qs.stringify(newQuery, options.stringify)
       update({ query: newQuery, queryString })
@@ -44,7 +37,7 @@ export function useQueryString() {
     [update, query, options]
   )
 
-  return [query, set]
+  return /** @type {const} */ ([query, set])
 }
 
 export function QueryStringProvider({ search, update = replaceQueryString, options = defaultOptions, children }) {
