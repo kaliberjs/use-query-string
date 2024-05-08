@@ -22,7 +22,7 @@ const EMPTY = {}
 
 export function useQueryString() {
   const { search, update, options } = React.useContext(queryStringContext)
-  const [query, setQuery] = React.useState(() => search ? qs.parse(search, options.parse) : EMPTY)
+  const [query, setQuery] = React.useState(/** @type {object} */(() => search ? qs.parse(search, options.parse) : EMPTY))
 
   React.useEffect(
     () => {
@@ -34,7 +34,7 @@ export function useQueryString() {
   )
 
   const set = React.useCallback(
-    (/** @type {object | ((any) => object)} */ queryOrFn) => {
+    (/** @type {object | ((object) => object)} */ queryOrFn) => {
       const newQuery = typeof queryOrFn === 'function' ? queryOrFn(query) : queryOrFn
       const queryString = qs.stringify(newQuery, options.stringify)
       update({ query: newQuery, queryString })
