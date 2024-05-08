@@ -14,6 +14,12 @@ export const defaultOptions = {
   }
 }
 
+/** @type {React.Context<object>} */
+export const queryStringContext = React.createContext({ update: replaceQueryString, search: null, options: defaultOptions })
+
+const listeners = new Set()
+const EMPTY = {}
+
 export function useQueryString() {
   const { search, update, options } = React.useContext(queryStringContext)
   const [query, setQuery] = React.useState(() => search ? qs.parse(search, options.parse) : EMPTY)
