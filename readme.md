@@ -15,7 +15,8 @@ _config/default.js_
 module.exports = {
   kaliber: {
     compileWithBabel: [
-      /@kaliber\//,
+      /@kaliber\/use-query-string/,
+      /filter-obj/,
       /query-string/,
       /split-on-first/,
       /strict-uri-encode/,
