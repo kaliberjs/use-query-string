@@ -34,7 +34,7 @@ export function useQueryString() {
   )
 
   const set = React.useCallback(
-    queryOrFn => {
+    (/** @type {object | ((object) => object)} */ queryOrFn) => {
       const newQuery = typeof queryOrFn === 'function' ? queryOrFn(query) : queryOrFn
       const queryString = qs.stringify(newQuery, options.stringify)
       update({ query: newQuery, queryString })
@@ -43,7 +43,7 @@ export function useQueryString() {
     [update, query, options]
   )
 
-  return [query, set]
+  return /** @type {const} */ ([query, set])
 }
 
 export function QueryStringProvider({ search, update = replaceQueryString, options = defaultOptions, children }) {
